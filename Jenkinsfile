@@ -11,6 +11,7 @@ pipeline {
         stage('Construir imagen de Docker') {
             steps {
                 script {
+                    sh 'pwd'
                     // Construir la imagen de Docker
                     docker.build('michellefj/proyectofinal:latest')
                 }
