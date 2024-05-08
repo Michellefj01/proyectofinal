@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:latest'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     stages {
         stage("Clone Git Repository") {
             steps {
@@ -15,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // Construye la imagen de Docker
-                    docker.build('proyectofinal:latest')
+                    sh 'docker build -t proyectofinal:latest .'
                 }
             }
         }
