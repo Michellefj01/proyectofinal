@@ -2,11 +2,9 @@ pipeline {
     agent any
     
     environment {
-        // Define las credenciales de Kubernetes
-        KUBECONFIG = credentials('kubernetes')
-        // Define el nombre del namespace en Kubernetes
+        // Utiliza la credencial de Kubernetes configurada en Jenkins
+        KUBECONFIG_CRED = credentials('kubernetes')
         NAMESPACE = 'final_namespace'
-        // Define el nombre del deployment en Kubernetes
         DEPLOYMENT_NAME = 'final_deployment'
     }
     
@@ -21,7 +19,6 @@ pipeline {
             steps {
                 script {
                     sh 'pwd'
-                    // Construir la imagen de Docker
                     docker.build('michellefj/proyectofinal:latest')
                 }
             }
@@ -30,8 +27,10 @@ pipeline {
         stage('Desplegar en Kubernetes') {
             steps {
                 script {
-                    // Despliega la imagen en Kubernetes
-                    sh "kubectl --kubeconfig=${KUBECONFIG} --namespace=${NAMESPACE} set image deployment/${DEPLOYMENT_NAME} *=michellefj/proyectofinal:latest"
+                    // Utiliza las credenciales de Kubernetes configuradas en Jenkins
+                    withCredentials([kubeconfigFile(credentialsId: 'kubernetes', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=${KUBECONFIG} --namespace=${NAMESPACE} set image deployment/${DEPLOYMENT_NAME} *=michellefj/proyectofinal:latest"
+                    }
                 }
             }
         }
