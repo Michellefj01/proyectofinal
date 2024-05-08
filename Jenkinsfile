@@ -8,6 +8,13 @@ pipeline {
             }
         }
         
+        stage('Esperar aprobación') {
+            steps {
+                // Solicitar aprobación manual antes de continuar
+                input '¿Estás seguro de que deseas construir la imagen de Docker?'
+            }
+        }
+        
         stage('Construir imagen de Docker') {
             steps {
                 script {
@@ -19,3 +26,4 @@ pipeline {
         }
     }
 }
+
