@@ -1,46 +1,20 @@
 pipeline {
-    environment {
-        IMAGEN = "michellefj/proyectofinal"
-        USUARIO = 'dockerhub_id'
-    }
     agent any
+    
     stages {
-        stage('Clone') {
+        stage('Clonar repositorio') {
             steps {
-                git branch: "main", url: 'https://github.com/Michellefj01/proyectofinal.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                script {
-                    newApp = docker.build "$IMAGEN:$BUILD_NUMBER"
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                script {
-                    docker.image("$IMAGEN:$BUILD_NUMBER").inside('-u root') {
-                           sh 'apache2ctl -v'
-                        }
-                    }
+                git branch: 'main', url: 'https://github.com/Michellefj01/proyectofinal.git'
             }
         }
         
-        stage('Deploy') {
+        stage('Construir imagen de Docker') {
             steps {
                 script {
-                    docker.withRegistry( '', USUARIO ) {
-                        newApp.push()
-                    }
+                    // Construir la imagen de Docker
+                    docker.build('michellefj/proyectofinal:latest')
                 }
             }
-        }
-        stage('Clean Up') {
-            steps {
-                sh "docker rmi $IMAGEN:$BUILD_NUMBER"
-                }
         }
     }
 }
