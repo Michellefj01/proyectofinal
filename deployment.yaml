@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proyectofinal-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: proyectofinal
+  template:
+    metadata:
+      labels:
+        app: proyectofinal
+    spec:
+      containers:
+      - name: proyectofinal
+        image: michellefj/proyectofinal:latest 
+        ports:
+        - containerPort: 3000
